@@ -1,0 +1,28 @@
+$kind: http-request
+name: 'Admin - Create Product Unauthorized'
+method: POST
+url: '{{baseUrl}}/api/products'
+order: 8000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "Unauthorized Product",
+      "slug": "unauthorized-product",
+      "price": 10
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 401", function () {
+        pm.response.to.have.status(401);
+      });
+      pm.test("Response has error field equal to Unauthorized", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("error");
+        pm.expect(json.error).to.equal("Unauthorized");
+      });

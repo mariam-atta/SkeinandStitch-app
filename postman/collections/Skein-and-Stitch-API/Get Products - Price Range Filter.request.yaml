@@ -1,0 +1,24 @@
+$kind: http-request
+name: 'Get Products - Price Range Filter'
+method: GET
+url: '{{baseUrl}}/api/products'
+order: 4000
+queryParams:
+  - key: minPrice
+    value: '10'
+  - key: maxPrice
+    value: '50'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function () {
+        pm.response.to.have.status(200);
+      });
+      pm.test("All products have effectivePrice within range", function () {
+        const json = pm.response.json();
+        json.products.forEach(function (product) {
+          pm.expect(product.effectivePrice).to.be.at.least(10);
+          pm.expect(product.effectivePrice).to.be.at.most(50);
+        });
+      });

@@ -1,0 +1,36 @@
+$kind: http-request
+name: 'Admin - Update Product'
+method: PATCH
+url: '{{baseUrl}}/api/adminproducts/{{createdProductId}}'
+order: 9000
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{adminToken}}'
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "price": 29.99,
+      "stock": 5
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function () {
+        pm.response.to.have.status(200);
+      });
+      pm.test("Response has product object", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("product");
+        pm.expect(json.product).to.be.an("object");
+      });
+      pm.test("Product price equals 29.99", function () {
+        const json = pm.response.json();
+        pm.expect(json.product.price).to.equal(29.99);
+      });

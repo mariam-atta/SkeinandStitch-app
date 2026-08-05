@@ -1,0 +1,26 @@
+$kind: http-request
+name: 'Get Products - Filter by Category'
+method: GET
+url: '{{baseUrl}}/api/products'
+order: 2000
+queryParams:
+  - key: category
+    value: amigurumi
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function () {
+        pm.response.to.have.status(200);
+      });
+      pm.test("Response has products array", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("products");
+        pm.expect(json.products).to.be.an("array");
+      });
+      pm.test("Every product has category equal to amigurumi", function () {
+        const json = pm.response.json();
+        json.products.forEach(function (product) {
+          pm.expect(product.category).to.equal("amigurumi");
+        });
+      });

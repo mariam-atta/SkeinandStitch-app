@@ -1,0 +1,25 @@
+$kind: http-request
+name: Get Product by Slug
+method: GET
+url: '{{baseUrl}}/api/products/{{productSlug}}'
+order: 5000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function () {
+        pm.response.to.have.status(200);
+      });
+      pm.test("Response has product object", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("product");
+        pm.expect(json.product).to.be.an("object");
+      });
+      pm.test("Product slug matches requested slug", function () {
+        const json = pm.response.json();
+        pm.expect(json.product.slug).to.equal(pm.collectionVariables.get("productSlug"));
+      });
+      pm.test("Product has effectivePrice field", function () {
+        const json = pm.response.json();
+        pm.expect(json.product).to.have.property("effectivePrice");
+      });

@@ -1,0 +1,22 @@
+$kind: http-request
+name: 'Get Products - Sort by Price Ascending'
+method: GET
+url: '{{baseUrl}}/api/products'
+order: 3000
+queryParams:
+  - key: sort
+    value: price-asc
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function () {
+        pm.response.to.have.status(200);
+      });
+      pm.test("Products are sorted by price ascending", function () {
+        const json = pm.response.json();
+        const products = json.products;
+        for (let i = 1; i < products.length; i++) {
+          pm.expect(products[i].effectivePrice).to.be.at.least(products[i - 1].effectivePrice);
+        }
+      });

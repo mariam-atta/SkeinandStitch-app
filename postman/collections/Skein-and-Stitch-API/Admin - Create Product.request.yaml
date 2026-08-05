@@ -1,0 +1,45 @@
+$kind: http-request
+name: 'Admin - Create Product'
+method: POST
+url: '{{baseUrl}}/api/products'
+order: 7000
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{adminToken}}'
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "Test Amigurumi Bear",
+      "slug": "test-amigurumi-bear",
+      "price": 25.99,
+      "category": "amigurumi",
+      "subcategory": "animals",
+      "colors": ["brown", "white"],
+      "sizes": ["small"],
+      "stock": 10,
+      "description": "A cute handmade crochet bear.",
+      "images": []
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200 or 201", function () {
+        pm.expect(pm.response.code).to.be.oneOf([200, 201]);
+      });
+      pm.test("Response has product object", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("product");
+        pm.expect(json.product).to.be.an("object");
+      });
+      pm.test("Product has id field", function () {
+        const json = pm.response.json();
+        pm.expect(json.product).to.have.property("id");
+      });
+      pm.collectionVariables.set("createdProductId", pm.response.json().product.id);

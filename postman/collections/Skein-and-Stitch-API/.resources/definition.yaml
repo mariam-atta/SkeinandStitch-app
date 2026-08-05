@@ -1,0 +1,3 @@
+$kind: collection
+name: 'Skein & Stitch API'
+description: 'API collection for the Skein & Stitch crochet store. Tests products listing, filtering, single product lookup, admin product creation, and admin product updates.'
