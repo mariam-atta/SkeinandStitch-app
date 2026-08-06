@@ -45,7 +45,7 @@ export default function AboutPage() {
 
           <div className="relative overflow-hidden rounded-[36px]">
             <Image
-              src="/images/Hero/hero.png"
+              src="/images/About/about.jpg"
               alt="Skein and Stitch"
               width={900}
               height={1100}
