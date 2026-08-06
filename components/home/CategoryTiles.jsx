@@ -35,6 +35,9 @@ export default function CategoryTiles() {
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden rounded-2xl"
               >
+
+
+                
                 <div className="relative aspect-[3/4] overflow-hidden bg-stone-200">
                   <motion.div
                     whileHover={{ scale: 1.08 }}
