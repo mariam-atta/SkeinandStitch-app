@@ -4,7 +4,8 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 export async function GET(request, { params }) {
   const { slug } = await params;
 
-  const { data, error } = await supabaseAdmin
+  // Get product
+  const { data: product, error } = await supabaseAdmin
     .from('products')
     .select(`
       *,
@@ -18,23 +19,39 @@ export async function GET(request, { params }) {
     .eq('slug', slug)
     .single();
 
-  if (error || !data) {
+  if (error || !product) {
     return NextResponse.json(
       { error: 'Product not found' },
       { status: 404 }
     );
   }
 
-  const sortedImages = (data.product_images || []).sort(
+  // Get reviews for this product
+  const { data: reviews, error: reviewsError } = await supabaseAdmin
+    .from('reviews')
+    .select('*')
+    .eq('product_id', product.id)
+    .order('created_at', { ascending: false });
+
+  if (reviewsError) {
+    return NextResponse.json(
+      { error: reviewsError.message },
+      { status: 500 }
+    );
+  }
+
+  const sortedImages = (product.product_images || []).sort(
     (a, b) => a.sort_order - b.sort_order
   );
-
+console.log("API HIT");
+console.log(reviews);
   return NextResponse.json({
     product: {
-      ...data,
+      ...product,
       images: sortedImages,
-      salePrice: data.sale_price,
-      effectivePrice: data.sale_price ?? data.price,
+      salePrice: product.sale_price,
+      effectivePrice: product.sale_price ?? product.price,
     },
+    reviews,
   });
 }

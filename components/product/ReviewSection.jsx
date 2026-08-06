@@ -59,9 +59,9 @@ export default function ReviewSection({
         </div>
       ) : (
         <div className="grid gap-8 md:grid-cols-2">
-          {reviews.map((review, index) => (
+          {reviews.map((review) => (
             <article
-              key={index}
+              key={review.id}
               className="rounded-3xl border border-[#8FA582]/50 bg-[#DCE8D5] p-8 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
             >
               {/* Stars */}
@@ -78,11 +78,11 @@ export default function ReviewSection({
                 ))}
               </div>
 
-              {/* Name */}
+              {/* Name & Date */}
               <div className="mb-5 flex items-center justify-between">
                 <div>
                   <p className="font-medium text-[#3F5137]">
-                    {review.userName}
+                    {review.user_name}
                   </p>
 
                   <div className="mt-1 flex items-center gap-1 text-xs text-[#5C7A52]">
@@ -92,7 +92,7 @@ export default function ReviewSection({
                 </div>
 
                 <span className="text-xs text-[#5C7A52]/70">
-                  {review.date}
+                  {new Date(review.created_at).toLocaleDateString()}
                 </span>
               </div>
 
