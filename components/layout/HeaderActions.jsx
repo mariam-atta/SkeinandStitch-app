@@ -13,7 +13,6 @@ import { useWishlist } from '@/context/WishlistContext';
 
 export default function HeaderActions({
   scrolled,
-  isAdmin,
   setMobileOpen,
 }) {
   const { cartCount, setIsCartOpen } = useCart();
@@ -24,18 +23,13 @@ export default function HeaderActions({
 
   return (
     <div className="flex items-center gap-2.5 sm:gap-5">
-      {isAdmin && (
-        <Link
-          href="/admin/products"
-          className={`hidden xl:block text-[12px] uppercase tracking-[0.18em] transition-colors duration-300 ${
-            scrolled
-              ? 'text-ink-900 hover:text-clay-600'
-              : 'text-white/90 hover:text-white'
-          }`}
-        >
-          Admin
-        </Link>
-      )}
+      <Link
+      href="/admin/products"
+      className={`hidden lg:block text-[12px] uppercase tracking-[0.18em] transition-colors duration-300 ${
+  scrolled
+    ? 'text-ink-900 hover:text-clay-600'
+    : 'text-white/90 hover:text-white'
+}`}> Admin</Link>
 
       {!isAdminRoute && (
         <>

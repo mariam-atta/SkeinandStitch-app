@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { StarIcon } from '@heroicons/react/24/solid';
 import WishlistButton from '@/components/wishlist/WishlistButton';
@@ -14,6 +15,7 @@ export default function ProductCard({ product }) {
     stock,
     rating,
     review_count,
+    image,
   } = product;
 
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -25,22 +27,33 @@ export default function ProductCard({ product }) {
   return (
     <article className="group cursor-pointer">
       <Link href={`/product/${slug}`} className="block">
-        <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-stone-100 via-stone-200 to-stone-300">
+        <div className="relative aspect-[4/5] overflow-hidden bg-stone-200">
 
-          {/* Luxury Placeholder */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#ffffff55,transparent_60%)]" />
+          {image ? (
+            <Image
+              src={image}
+              alt={name}
+              fill
+              sizes="(max-width: 768px) 50vw, 33vw"
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-stone-100 via-stone-200 to-stone-300">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#ffffff55,transparent_60%)]" />
 
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <div className="mb-6 h-20 w-20 rounded-full border border-white/60 bg-white/30 backdrop-blur-md transition-transform duration-700 group-hover:scale-110" />
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="mb-6 h-20 w-20 rounded-full border border-white/60 bg-white/30 backdrop-blur-md transition-transform duration-700 group-hover:scale-110" />
 
-            <h3 className="font-display text-2xl text-ink-900/80">
-              Skein &amp; Stitch
-            </h3>
+                <h3 className="font-display text-2xl text-ink-900/80">
+                  Skein &amp; Stitch
+                </h3>
 
-            <p className="mt-2 text-[11px] uppercase tracking-[0.35em] text-ink-900/40">
-              Handmade Collection
-            </p>
-          </div>
+                <p className="mt-2 text-[11px] uppercase tracking-[0.35em] text-ink-900/40">
+                  Handmade Collection
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Wishlist */}
           <div className="absolute top-5 right-5">

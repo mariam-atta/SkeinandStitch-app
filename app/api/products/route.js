@@ -31,7 +31,7 @@ export async function GET(request) {
 
   let query = supabaseAdmin
     .from('products')
-    .select('*');
+    .select('*, product_images(url, color, sort_order, is_primary)');
 
   if (category) {
     query = query.eq('category', category);
@@ -54,26 +54,46 @@ export async function GET(request) {
   }
 
   const { data, error } = await query;
+  console.log('RAW SUPABASE DATA:', JSON.stringify(data?.[0], null, 2));
 
   if (error) {
-  console.error(error);
+    console.error(error);
 
-  return NextResponse.json(
-    {
-      error: error.message,
-      details: error.details,
-      hint: error.hint,
-      code: error.code,
-    },
-    { status: 500 }
-  );
-}
+    return NextResponse.json(
+      {
+        error: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      },
+      { status: 500 }
+    );
+  }
 
-  let products = (data ?? []).map(product => ({
-    ...product,
-    salePrice: product.sale_price,
-    effectivePrice: product.sale_price ?? product.price,
-  }));
+  let products = (data ?? []).map(product => {
+    const images = product.product_images ?? [];
+
+    // If a color filter is active, prefer that color's primary image.
+    // Otherwise fall back to whichever image is marked primary,
+    // then to the first image available.
+    const relevantImages = color
+      ? images.filter(img => img.color === color)
+      : images;
+
+    const primaryImage =
+      relevantImages.find(img => img.is_primary) ??
+      relevantImages[0] ??
+      images.find(img => img.is_primary) ??
+      images[0] ??
+      null;
+
+    return {
+      ...product,
+      salePrice: product.sale_price,
+      effectivePrice: product.sale_price ?? product.price,
+      image: primaryImage?.url ?? null,
+    };
+  });
 
   // Price filtering (effective price)
   if (minPrice) {

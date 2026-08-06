@@ -11,7 +11,9 @@ export default function DesktopNav({ scrolled }) {
   return (
     <nav className="flex items-center gap-10">
       <NavDropdown label="Women" slug="women" scrolled={scrolled} />
+
       <NavDropdown label="Men" slug="men" scrolled={scrolled} />
+
       <NavDropdown label="Kids" slug="kids" scrolled={scrolled} />
 
       <Link href="/shop/bags" className={linkClass}>
@@ -22,7 +24,6 @@ export default function DesktopNav({ scrolled }) {
         Customize
       </Link>
 
-      
     </nav>
   );
 }

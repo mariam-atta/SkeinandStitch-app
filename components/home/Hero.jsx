@@ -9,7 +9,11 @@ const fadeUp = {
   visible: (delay = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.8, delay, ease: 'easeOut' },
+    transition: {
+      duration: 0.8,
+      delay,
+      ease: 'easeOut',
+    },
   }),
 };
 
@@ -99,7 +103,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
+        {/* Scroll Indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -109,9 +113,14 @@ export default function Hero() {
           <span className="text-[10px] uppercase tracking-[0.3em] text-white/70">
             Scroll
           </span>
+
           <motion.div
             animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{
+              duration: 1.8,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
             className="h-8 w-[1px] bg-white/50"
           />
         </motion.div>
@@ -119,14 +128,14 @@ export default function Hero() {
 
       {/* ---------------- Mobile ---------------- */}
       <div className="block md:hidden">
-        <div className="relative h-[55vh] xs:h-[60vh] overflow-hidden">
+        <div className="relative h-[62vh] xs:h-[66vh] overflow-hidden">
           <Image
-            src="/images/Hero/hero.png"
+            src="/images/Hero/Mobile-hero.png"
             alt="Skein & Stitch Hero"
             fill
             priority
             sizes="100vw"
-            className="object-cover object-[70%_35%]"
+            className="object-cover object-[72%_35%]"
           />
         </div>
 
@@ -149,14 +158,14 @@ export default function Hero() {
           <div className="mt-8 flex flex-col gap-4">
             <Link
               href="/shop"
-              className="flex items-center justify-center rounded-full bg-juniper-700 py-4 text-sm font-semibold text-white"
+              className="flex items-center justify-center rounded-full bg-juniper-700 py-4 text-sm font-semibold text-white transition-colors hover:bg-juniper-800"
             >
               Shop Collection
             </Link>
 
             <Link
               href="/customize"
-              className="flex items-center justify-center rounded-full border border-ink-900/15 py-4 text-sm font-semibold text-ink-900"
+              className="flex items-center justify-center rounded-full border border-ink-900/15 py-4 text-sm font-semibold text-ink-900 transition-colors hover:bg-ink-900 hover:text-white"
             >
               Customize Yours
             </Link>

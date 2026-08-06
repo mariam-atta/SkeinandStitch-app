@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${fraunces.variable} ${workSans.variable}`}>
       <body
   className="text-ink-900 font-body antialiased"
-  style={{ background: '#F6F2EB' }}
+  style={{ background: '#ded7b9'  }}
 >
         <CartProvider>
           <WishlistProvider>

@@ -1,61 +1,79 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function ProductGallery({ images = [] }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const galleryImages =
-    images.length > 0 ? images : Array.from({ length: 4 });
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [images]);
+
+  if (!images.length) {
+    return (
+      <div className="sticky top-28">
+        <div className="flex aspect-[4/5] items-center justify-center rounded-[28px] border border-stone-200 bg-[#F7F3EC]">
+          <div className="text-center">
+            <h2 className="font-display text-3xl text-ink-900">
+              Skein & Stitch
+            </h2>
+
+            <p className="mt-3 text-xs uppercase tracking-[0.35em] text-ink-900/40">
+              No Image Available
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="sticky top-28">
+
       {/* Main Image */}
-      <div className="group relative aspect-[4/5] overflow-hidden rounded-[28px] border border-stone-200 bg-gradient-to-br from-[#F7F3EC] via-[#EEE7DB] to-[#DDD4C4] shadow-sm">
 
-        {/* soft glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#ffffff90,transparent_55%)]" />
+      <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] border border-stone-200 bg-white">
 
-        {/* placeholder */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center transition duration-700 group-hover:scale-105">
+        <Image
+          src={images[activeIndex].url}
+          alt="Product"
+          fill
+          priority
+          className="object-cover"
+        />
 
-          <div className="mb-8 h-28 w-28 rounded-full border border-white/70 bg-white/40 backdrop-blur-md" />
-
-          <h2 className="font-display text-3xl text-ink-900/80">
-            Skein &amp; Stitch
-          </h2>
-
-          <p className="mt-3 text-xs uppercase tracking-[0.4em] text-ink-900/45">
-            Handmade Collection
-          </p>
+        <div className="absolute bottom-5 right-5 rounded-full bg-white/90 px-4 py-2 text-xs font-semibold shadow">
+          {activeIndex + 1} / {images.length}
         </div>
 
-        {/* Counter */}
-        <div className="absolute bottom-5 right-5 rounded-full bg-white/90 px-4 py-2 text-xs font-medium shadow">
-          {activeIndex + 1} / {galleryImages.length}
-        </div>
       </div>
 
       {/* Thumbnails */}
+
       <div className="mt-5 grid grid-cols-4 gap-4">
-        {galleryImages.map((_, index) => (
+
+        {images.map((image, index) => (
           <button
-            key={index}
+            key={image.id}
             onClick={() => setActiveIndex(index)}
-            className={`group aspect-square overflow-hidden rounded-2xl border transition-all duration-300 ${
+            className={`relative aspect-square overflow-hidden rounded-2xl border transition ${
               activeIndex === index
                 ? 'border-juniper-700 ring-2 ring-juniper-700/20'
                 : 'border-stone-200 hover:border-juniper-500'
             }`}
           >
-            <div className="flex h-full items-center justify-center bg-gradient-to-br from-[#F7F3EC] to-[#DDD4C4] transition duration-500 group-hover:scale-105">
-              <span className="font-display text-lg text-ink-900/35">
-                S&S
-              </span>
-            </div>
+            <Image
+              src={image.url}
+              alt={`Thumbnail ${index + 1}`}
+              fill
+              className="object-cover"
+            />
           </button>
         ))}
+
       </div>
+
     </div>
   );
 }

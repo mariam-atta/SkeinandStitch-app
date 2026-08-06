@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Container from '@/components/layout/Container';
@@ -68,19 +69,15 @@ export default function CustomizeBanner() {
                   repeat: Infinity,
                   duration: 6
                 }}
-                className="h-[420px] w-[320px] rounded-[36px] border border-white/10 bg-gradient-to-br from-stone-100 via-stone-200 to-stone-300 shadow-2xl flex flex-col items-center justify-center"
+                className="relative h-[420px] w-[320px] rounded-[36px] overflow-hidden border border-white/10 shadow-2xl"
               >
-
-                <div className="h-28 w-28 rounded-full border border-white bg-white/40 backdrop-blur-md" />
-
-                <p className="mt-8 font-display text-3xl text-ink-900">
-                  Your Design
-                </p>
-
-                <p className="mt-3 text-xs uppercase tracking-[0.3em] text-ink-900/40">
-                  Preview Coming Soon
-                </p>
-
+                <Image
+                  src="/images/Banner/Crochet-Customize-Banner.jpg"
+                  alt="Customize your crochet piece"
+                  fill
+                  sizes="320px"
+                  className="object-cover"
+                />
               </motion.div>
 
             </div>

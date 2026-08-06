@@ -96,7 +96,7 @@ export default function MobileNav({ onClose, isAdmin }) {
           </Link>
         </div>
 
-        {isAdmin && (
+        
           <div className="mt-3 border-t border-stone-200 pt-3">
             <Link
               href="/admin/products"
@@ -106,7 +106,7 @@ export default function MobileNav({ onClose, isAdmin }) {
               Admin Dashboard
             </Link>
           </div>
-        )}
+        
       </nav>
     </div>
   );

@@ -76,8 +76,7 @@ export default function TestimonialsSection({
                 delay: index * 0.08,
                 duration: .6,
               }}
-              className="group rounded-3xl border border-stone-200 bg-white p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl"
-            >
+              className="group rounded-3xl border border-[#8FA582]/50 bg-[#C8D8C4] p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl" >
               <StarRow rating={review.rating} />
 
               <p className="mt-6 text-base leading-8 text-ink-900/80 italic">
