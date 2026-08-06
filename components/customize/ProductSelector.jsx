@@ -4,12 +4,35 @@ import Image from 'next/image';
 import { CheckIcon } from '@heroicons/react/24/solid';
 
 const PRODUCTS = [
-  { name: 'Cardigan', image: '/images/Hero/hero.png' },
-  { name: 'Sweater', image: '/images/Hero/hero.png' },
-  { name: 'Beanie', image: '/images/Hero/hero.png' },
-  { name: 'Muffler', image: '/images/Hero/hero.png' },
-  { name: 'Bag', image: '/images/Hero/hero.png' },
-  { name: 'Other', image: '/images/Hero/hero.png' },
+  {
+  name: "Cardigan",
+  image: "/images/Customize/Button-Front-Cardigan.jpg",
+},
+
+{
+  name: "Sweater",
+  image: "/images/Customize/Cable-Sweater.jpg",
+},
+
+{
+  name: "Beanie",
+  image: "/images/Customize/Cable-Beanie.jpg",
+},
+
+{
+  name: "Muffler",
+  image: "/images/Customize/Crochet-Muffler.jpg",
+},
+
+{
+  name: "Bag",
+  image: "/images/Customize/Tote-Bag.jpg",
+},
+
+{
+  name: "Other",
+  image: "/images/Customize/Others.jpg",
+},
 ];
 
 export default function ProductSelector({
