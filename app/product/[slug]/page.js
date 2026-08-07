@@ -37,7 +37,7 @@ export default async function ProductPage({ params }) {
   const { product, reviews } = await res.json();
 
   return (
-    <Container className="pt-40 pb-16">
+    <Container className="pt-24 lg:pt-40 pb-16">
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
         <ProductGallery images={product.images ?? []} />
 

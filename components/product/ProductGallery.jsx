@@ -29,7 +29,7 @@ export default function ProductGallery({ images = [] }) {
   }
 
   return (
-    <div className="sticky top-28">
+    <div className="lg:sticky lg:top-28">
 
       {/* Main Image */}
 
