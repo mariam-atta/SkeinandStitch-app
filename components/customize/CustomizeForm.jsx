@@ -35,6 +35,8 @@ export default function CustomizeForm() {
 
   const [referenceImages, setReferenceImages] = useState([]);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   function updateField(field, value) {
     setFormData((prev) => ({
@@ -51,172 +53,211 @@ export default function CustomizeForm() {
     updateField('colorNote', `${nearestLabel} (${hex})`);
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    setSubmitting(true);
+    setErrorMessage(null);
 
-    console.log({
-      ...formData,
-      referenceImages,
+    const body = new FormData();
+    body.append('name', formData.name);
+    body.append('contact', formData.contact);
+    body.append('productType', formData.productType);
+    body.append('colorNote', formData.colorNote);
+    body.append('size', formData.size);
+    body.append('notes', formData.notes);
+    referenceImages.forEach((file) => body.append('images', file));
+
+    const response = await fetch('/api/customize', {
+      method: 'POST',
+      body,
     });
+
+    setSubmitting(false);
+
+    if (!response.ok) {
+      setErrorMessage('Something went wrong submitting your request. Please try again.');
+      return;
+    }
 
     setSubmitted(true);
   }
+
+  if (submitted) {
+    return (
+      <div className="text-center py-16">
+        <h2 className="font-display text-2xl text-ink-900 mb-3">
+          Request received
+        </h2>
+        <p className="text-sm text-ink-900/60">
+          We'll reach out at {formData.contact} to confirm details and pricing.
+        </p>
+      </div>
+    );
+  }
+
   return (
-  <form onSubmit={handleSubmit} className="space-y-10">
+    <form onSubmit={handleSubmit} className="space-y-10">
 
-    <SectionCard
-      number="01"
-      title="Choose Your Piece"
-      description="Select the handmade item you'd like us to create."
-    >
-      <ProductSelector
-        selected={formData.productType}
-        onChange={(value) => updateField('productType', value)}
-      />
-    </SectionCard>
-
-    <SectionCard
-      number="02"
-      title="Choose Your Yarn"
-      description="Select a yarn shade or fine tune the exact colour."
-    >
-      <div className="space-y-8">
-
-        <div className="flex flex-wrap gap-3">
-          {YARN_SHADES.map((shade) => (
-            <button
-              key={shade.label}
-              type="button"
-              onClick={() => selectSwatch(shade)}
-              title={shade.label}
-              className={`group relative h-14 w-14 rounded-full transition-all duration-300 ${
-                formData.colorNote === shade.label
-                  ? 'scale-110 ring-4 ring-juniper-700/20'
-                  : 'hover:scale-105'
-              }`}
-              style={{ backgroundColor: shade.hex }}
-            >
-              <span
-                className={`absolute inset-0 rounded-full border-2 ${
-                  formData.colorNote === shade.label
-                    ? 'border-juniper-700'
-                    : 'border-white'
-                }`}
-              />
-            </button>
-          ))}
-        </div>
-
-        <ColorGradientSlider onChange={handleSliderChange} />
-
-        <input
-          type="text"
-          value={formData.colorNote}
-          onChange={(e) => updateField('colorNote', e.target.value)}
-          placeholder="Type a colour name if you have something specific..."
-          className="w-full rounded-2xl border border-stone-200 bg-white px-5 py-4 text-sm outline-none transition-all duration-300 focus:border-juniper-700"
-        />
-      </div>
-    </SectionCard>
-
-    <SectionCard
-      number="03"
-      title="Reference Images"
-      description="Upload inspiration photos, Pinterest screenshots or sketches."
-    >
-      <ImageUploadField onChange={setReferenceImages} />
-    </SectionCard>
-
-    <SectionCard
-      number="04"
-      title="Your Details"
-      description="Tell us where we can reach you."
-    >
-      <div className="grid gap-6 md:grid-cols-2">
-
-        <div>
-          <label className="mb-2 block text-xs uppercase tracking-[0.25em] text-ink-900/50">
-            Name
-          </label>
-
-          <input
-            type="text"
-            required
-            value={formData.name}
-            onChange={(e) => updateField('name', e.target.value)}
-            className="w-full rounded-2xl border border-stone-200 bg-white px-5 py-4 outline-none transition-all duration-300 focus:border-juniper-700"
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block text-xs uppercase tracking-[0.25em] text-ink-900/50">
-            Email / Phone
-          </label>
-
-          <input
-            type="text"
-            required
-            value={formData.contact}
-            onChange={(e) => updateField('contact', e.target.value)}
-            className="w-full rounded-2xl border border-stone-200 bg-white px-5 py-4 outline-none transition-all duration-300 focus:border-juniper-700"
-          />
-        </div>
-
-      </div>
-
-      <div className="mt-8">
-
-        <label className="mb-4 block text-xs uppercase tracking-[0.25em] text-ink-900/50">
-          Size
-        </label>
-
-        <div className="flex flex-wrap gap-3">
-
-          {SIZES.map((size) => (
-            <button
-              key={size}
-              type="button"
-              onClick={() => updateField('size', size)}
-              className={`rounded-full px-7 py-3 text-sm transition-all duration-300 ${
-                formData.size === size
-                  ? 'bg-juniper-700 text-white shadow-lg'
-                  : 'border border-stone-200 bg-white hover:border-juniper-700'
-              }`}
-            >
-              {size}
-            </button>
-          ))}
-
-        </div>
-
-      </div>
-    </SectionCard>
-
-    <SectionCard
-      number="05"
-      title="Final Touches"
-      description="Anything else you'd like us to know?"
-    >
-      <textarea
-        rows={6}
-        value={formData.notes}
-        onChange={(e) => updateField('notes', e.target.value)}
-        placeholder="Describe your dream crochet piece..."
-        className="w-full rounded-3xl border border-stone-200 bg-white px-6 py-5 outline-none transition-all duration-300 focus:border-juniper-700"
-      />
-    </SectionCard>
-
-    <div className="flex justify-center pt-4">
-
-      <button
-        type="submit"
-        className="rounded-full bg-juniper-700 px-10 py-4 font-medium text-white transition-all duration-500 hover:-translate-y-1 hover:scale-105 hover:bg-juniper-800 hover:shadow-2xl"
+      <SectionCard
+        number="01"
+        title="Choose Your Piece"
+        description="Select the handmade item you'd like us to create."
       >
-        Start My Custom Order →
-      </button>
+        <ProductSelector
+          selected={formData.productType}
+          onChange={(value) => updateField('productType', value)}
+        />
+      </SectionCard>
 
-    </div>
+      <SectionCard
+        number="02"
+        title="Choose Your Yarn"
+        description="Select a yarn shade or fine tune the exact colour."
+      >
+        <div className="space-y-8">
 
-  </form>
-);
+          <div className="flex flex-wrap gap-3">
+            {YARN_SHADES.map((shade) => (
+              <button
+                key={shade.label}
+                type="button"
+                onClick={() => selectSwatch(shade)}
+                title={shade.label}
+                className={`group relative h-14 w-14 rounded-full transition-all duration-300 ${
+                  formData.colorNote === shade.label
+                    ? 'scale-110 ring-4 ring-juniper-700/20'
+                    : 'hover:scale-105'
+                }`}
+                style={{ backgroundColor: shade.hex }}
+              >
+                <span
+                  className={`absolute inset-0 rounded-full border-2 ${
+                    formData.colorNote === shade.label
+                      ? 'border-juniper-700'
+                      : 'border-white'
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+
+          <ColorGradientSlider onChange={handleSliderChange} />
+
+          <input
+            type="text"
+            value={formData.colorNote}
+            onChange={(e) => updateField('colorNote', e.target.value)}
+            placeholder="Type a colour name if you have something specific..."
+            className="w-full rounded-2xl border border-stone-200 bg-white px-5 py-4 text-sm outline-none transition-all duration-300 focus:border-juniper-700"
+          />
+        </div>
+      </SectionCard>
+
+      <SectionCard
+        number="03"
+        title="Reference Images"
+        description="Upload inspiration photos, Pinterest screenshots or sketches."
+      >
+        <ImageUploadField onChange={setReferenceImages} />
+      </SectionCard>
+
+      <SectionCard
+        number="04"
+        title="Your Details"
+        description="Tell us where we can reach you."
+      >
+        <div className="grid gap-6 md:grid-cols-2">
+
+          <div>
+            <label className="mb-2 block text-xs uppercase tracking-[0.25em] text-ink-900/50">
+              Name
+            </label>
+
+            <input
+              type="text"
+              required
+              value={formData.name}
+              onChange={(e) => updateField('name', e.target.value)}
+              className="w-full rounded-2xl border border-stone-200 bg-white px-5 py-4 outline-none transition-all duration-300 focus:border-juniper-700"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-xs uppercase tracking-[0.25em] text-ink-900/50">
+              Email / Phone
+            </label>
+
+            <input
+              type="text"
+              required
+              value={formData.contact}
+              onChange={(e) => updateField('contact', e.target.value)}
+              className="w-full rounded-2xl border border-stone-200 bg-white px-5 py-4 outline-none transition-all duration-300 focus:border-juniper-700"
+            />
+          </div>
+
+        </div>
+
+        <div className="mt-8">
+
+          <label className="mb-4 block text-xs uppercase tracking-[0.25em] text-ink-900/50">
+            Size
+          </label>
+
+          <div className="flex flex-wrap gap-3">
+
+            {SIZES.map((size) => (
+              <button
+                key={size}
+                type="button"
+                onClick={() => updateField('size', size)}
+                className={`rounded-full px-7 py-3 text-sm transition-all duration-300 ${
+                  formData.size === size
+                    ? 'bg-juniper-700 text-white shadow-lg'
+                    : 'border border-stone-200 bg-white hover:border-juniper-700'
+                }`}
+              >
+                {size}
+              </button>
+            ))}
+
+          </div>
+
+        </div>
+      </SectionCard>
+
+      <SectionCard
+        number="05"
+        title="Final Touches"
+        description="Anything else you'd like us to know?"
+      >
+        <textarea
+          rows={6}
+          value={formData.notes}
+          onChange={(e) => updateField('notes', e.target.value)}
+          placeholder="Describe your dream crochet piece..."
+          className="w-full rounded-3xl border border-stone-200 bg-white px-6 py-5 outline-none transition-all duration-300 focus:border-juniper-700"
+        />
+      </SectionCard>
+
+      {errorMessage && (
+        <p className="rounded-2xl bg-clay-600/10 border border-clay-600/30 px-5 py-4 text-sm text-clay-600 text-center">
+          {errorMessage}
+        </p>
+      )}
+
+      <div className="flex justify-center pt-4">
+
+        <button
+          type="submit"
+          disabled={submitting}
+          className="rounded-full bg-juniper-700 px-10 py-4 font-medium text-white transition-all duration-500 hover:-translate-y-1 hover:scale-105 hover:bg-juniper-800 hover:shadow-2xl disabled:opacity-50"
+        >
+          {submitting ? 'Submitting...' : 'Start My Custom Order →'}
+        </button>
+
+      </div>
+
+    </form>
+  );
 }
