@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { XMarkIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useCart } from '@/context/CartContext';
 import QuantityStepper from '@/components/product/QuantityStepper';
+import Image from 'next/image';
+
 
 export default function CartDrawer() {
   const { cartItems, isCartOpen, setIsCartOpen, updateQuantity, removeFromCart } = useCart();
@@ -47,9 +49,17 @@ export default function CartDrawer() {
                 const price = item.salePrice ?? item.price;
                 return (
                   <div key={item.cartItemId} className="flex gap-3">
-                    <div className="h-20 w-16 rounded-md bg-stone-200/60 shrink-0 flex items-center justify-center">
-                      <span className="text-[10px] text-ink-900/40">Image</span>
-                    </div>
+                    <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-md">
+                      {item.product_images?.[0]?.url ? (
+                        <Image
+                          src={item.product_images[0].url}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        <span className="flex h-full items-center justify-center text-[10px] text-ink-900/40">
+                          Image</span>)}</div>
                     <div className="flex-1">
                       <div className="flex items-start justify-between gap-2">
                         <p className="text-sm font-medium text-ink-900">{item.name}</p>
