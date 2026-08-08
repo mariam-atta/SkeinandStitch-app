@@ -63,7 +63,7 @@ My work included:
 - `/admin/products` — product list with edit/delete
 - `/admin/products/new` and `/admin/products/[id]/edit` — add/edit product form
 - Admin-only writes are authorized via a Supabase session token verified server-side in the API routes, not client-side alone
-
+- **Admin demo credentials are available upon request for reviewing the admin dashboard**
 ---
 
 ## Project structure
