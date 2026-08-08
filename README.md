@@ -1,18 +1,46 @@
 # Skein & Stitch
 
-A handmade crochet e-commerce storefront — built with Next.js and Supabase. Customers can browse products, filter/sort by category, add to cart or wishlist, check out, and submit custom order requests. Admins manage the product catalog through a protected dashboard.
+A handmade crochet e-commerce storefront built with Next.js and Supabase. Customers can browse products, filter by category, subcategory, color, size, and price, sort products, add items to their cart or wishlist, check out, and submit custom order requests. Admins can manage the product catalog through a protected dashboard.
 
-**Live site:** _add your Vercel URL here_
+**Live Demo:** https://skeinand-stitch-app.vercel.app/
 
 ---
 
-## Tech stack
+## Project Overview
+
+Skein & Stitch is a full-stack e-commerce platform that I designed and developed from the ground up during my internship.
+
+The project provides a complete shopping experience for a handmade crochet business, along with a protected admin dashboard for managing the product catalog.
+
+### What I Built
+
+- Full customer-facing e-commerce storefront
+- Product catalog with categories and subcategories
+- Product filtering by category, subcategory, color, size, and price
+- Product sorting by newest, oldest, and price
+- Product detail pages with image galleries and product options
+- Cart and wishlist functionality with browser persistence
+- Checkout and order placement
+- Inventory management with atomic stock updates
+- Customer reviews
+- Custom order request system
+- Protected admin authentication using Supabase Auth
+- Admin dashboard for adding, editing, and deleting products
+- Supabase PostgreSQL database integration
+- Next.js API routes for backend operations
+- Responsive UI with Tailwind CSS
+- Production deployment through Vercel
+
+---
+
+## Tech Stack
 
 - **Framework:** Next.js 16 (App Router)
 - **Styling:** Tailwind CSS
 - **Animation:** Framer Motion
 - **Backend / Database:** Supabase (Postgres, Auth, Row Level Security)
-- **API layer:** Next.js Route Handlers (`app/api/*`), using a server-only Supabase `service_role` client for admin writes
+- **API Layer:** Next.js Route Handlers (`app/api/*`)
+- **Authentication:** Supabase Auth
 - **Icons:** Heroicons
 - **Fonts:** Fraunces (display) + Work Sans (body), via `next/font`
 - **Deployment:** Vercel
@@ -22,86 +50,109 @@ A handmade crochet e-commerce storefront — built with Next.js and Supabase. Cu
 ## Features
 
 ### Storefront
-- Home page — hero, shop-by-category tiles, featured products, customer testimonials, customize CTA
-- Shop listing (all products, and per category/subcategory) with color, size, price-range, and sort filters
-- Product detail pages with image gallery, options, and customer reviews
-- Cart and Wishlist — persisted per-browser via `localStorage`, no login required
-- Checkout — shipping form, card or cash-on-delivery, atomic inventory decrement, order confirmation
-- Customize request page — color picker (swatches + gradient slider), size, notes, multi-image upload
+
+- Home page with:
+  - Hero section
+  - Shop-by-category tiles
+  - Featured products
+  - Customer testimonials
+  - Customization call-to-action
+
+- Shop listing for all products and individual categories/subcategories
+
+- Product filtering by:
+  - Category
+  - Subcategory
+  - Color
+  - Size
+  - Price range
+
+- Product sorting by:
+  - Newest
+  - Oldest
+  - Price: Low to High
+  - Price: High to Low
+
+- Product detail pages with:
+  - Product image gallery
+  - Color selection
+  - Size selection
+  - Quantity selection
+  - Customer reviews
+
+- Cart and Wishlist functionality
+  - Persisted per-browser using `localStorage`
+  - No customer login required
+
+- Checkout with:
+  - Shipping information
+  - Card payment option
+  - Cash on delivery
+  - Inventory validation
+  - Order confirmation
+
+- Inventory management with atomic stock decrementing to help prevent overselling
+
+- Custom order request page with:
+  - Color picker
+  - Color swatches
+  - Gradient color slider
+  - Size selection
+  - Notes
+  - Image selection
+
+- Customer reviews
 
 ### Admin
+
 - `/admin/login` — Supabase Auth email/password login
-- `/admin/products` — product list with edit/delete
-- `/admin/products/new` and `/admin/products/[id]/edit` — add/edit product form
-- Admin-only writes are authorized via a Supabase session token verified server-side in the API routes, not client-side alone
+- `/admin/products` — product management dashboard
+- `/admin/products/new` — add new product
+- `/admin/products/[id]/edit` — edit existing product
+- Product deletion functionality
+- Protected admin routes
+- Server-side authorization for admin API operations
+- Product and inventory management through the admin dashboard
+
+> **Admin Demo:** Admin access is available for demonstration purposes. Credentials can be provided upon request.
 
 ---
 
-## Project structure
+## Project Structure
 
-```
+```text
 app/
   page.js                     Home
   shop/                       All products, category, and subcategory listings
   product/[slug]/             Product detail
-  cart/, wishlist/, checkout/ Cart, wishlist, and checkout pages
+  cart/                       Shopping cart
+  wishlist/                   Wishlist
+  checkout/                   Checkout
   customize/                  Custom order request form
+
   admin/
-    login/                    Admin login (public)
+    login/                    Admin login
     (protected)/              Session-gated admin routes
+
   api/
     products/                 Public GET, admin POST/PATCH/DELETE
-    reviews/                  Testimonials data
+    reviews/                  Reviews and testimonials
     ...
 
-components/                   UI components, grouped by feature (layout, product, cart, wishlist, checkout, customize, admin, home)
-context/                      CartContext, WishlistContext (localStorage-backed)
+components/
+  layout/
+  product/
+  cart/
+  wishlist/
+  checkout/
+  customize/
+  admin/
+  home/
+
+context/
+  CartContext
+  WishlistContext
+
 lib/
-  supabaseClient.js           Browser Supabase client (publishable key)
-  supabaseAdmin.js            Server-only Supabase client (service_role key) — used only in app/api routes
-```
-
----
-
-## Environment variables
-
-Create a `.env.local` file with:
-
-```
-NEXT_PUBLIC_SUPABASE_URL=your-project-url
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key   # server-only, never exposed to the browser
-NEXT_PUBLIC_APP_URL=http://localhost:3000          # set to your deployed URL in production
-```
-
-The `SUPABASE_SERVICE_ROLE_KEY` bypasses Row Level Security — it must only ever be read in server-side code (`app/api/*`, `lib/supabaseAdmin.js`), never in a `'use client'` file.
-
----
-
-## Database
-
-Tables: `products`, `product_images`, `reviews`, `customize_requests`, `orders`, `order_items`.
-
-Row Level Security is enabled on every table. Products/reviews are publicly readable; inserts/updates/deletes on `products` require an `authenticated` Supabase Auth session (i.e. the logged-in admin). Orders and customize requests are insert-only for the public and are not publicly readable.
-
-Stock is decremented via a Postgres function (`decrement_stock`), called during checkout, which checks and subtracts stock atomically to prevent overselling when two customers buy the last unit at the same time.
-
----
-
-## Local development
-
-```bash
-npm install
-npm run dev
-```
-
-Runs at `http://localhost:3000`.
-
-> Note: this project runs the dev server on **Webpack** rather than Turbopack (`"dev": "next dev --webpack"` in `package.json`), due to a Turbopack crash encountered with nested dynamic routes under a route group during development. Production builds (`next build` / Vercel deploys) are unaffected.
-
----
-
-## Known limitations / not yet built
-
-- Customize request and review form submissions write to the database but reference images are not yet uploaded to storage.
-- No customer-facing order history (orders are write-only from the storefront by design).
+  supabaseClient.js           Browser Supabase client
+  supabaseAdmin.js            Server-only Supabase client
