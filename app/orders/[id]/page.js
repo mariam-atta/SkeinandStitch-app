@@ -164,10 +164,9 @@ export default async function OrderDetailPage({ params }) {
             </h2>
 
             <p className="text-sm text-ink-900/70">
-              {order.payment_method === 'card'
-                ? `Card ending in ${order.card_last_four}`
-                : 'Cash on delivery'}
-            </p>
+            {order.payment_method === 'card'
+            ? `Card •••• •••• •••• ${order.card_last_four}`
+            : 'Cash on delivery'}</p>
           </div>
 
           <Link
