@@ -22,13 +22,13 @@ export default function CheckoutPage() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [placing, setPlacing] = useState(false);
 
-  const shippingCost = 6;
   const subtotal = cartItems.reduce((sum, item) => {
-    const price = item.salePrice ?? item.price;
-    return sum + price * item.quantity;
-  }, 0);
+  const price = item.salePrice ?? item.price;
+  return sum + price * item.quantity;}, 0);
+  
+  const shippingCost = subtotal >= 75 ? 0 : 6;
   const total = subtotal + shippingCost;
-
+  
   async function handlePlaceOrder(e) {
     e.preventDefault();
     setPlacing(true);
