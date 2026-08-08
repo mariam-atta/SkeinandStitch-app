@@ -77,8 +77,11 @@ export async function GET(request) {
     // Otherwise fall back to whichever image is marked primary,
     // then to the first image available.
     const relevantImages = color
-      ? images.filter(img => img.color === color)
-      : images;
+  ? images.filter(
+      img =>
+        img.color?.trim().toLowerCase() === color.trim().toLowerCase()
+    )
+  : images;
 
     const primaryImage =
       relevantImages.find(img => img.is_primary) ??
